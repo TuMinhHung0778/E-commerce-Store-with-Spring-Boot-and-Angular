@@ -87,7 +87,7 @@ graph TD
 
 ### Prerequisites
 *   [Java JDK 17](https://www.oracle.com/java/technologies/downloads/#java17)
-*   [Node.js](https://nodejs.org/) (LTS Version)
+*   [Node.js](https://nodejs.org/) (LTS Version) - *Required for Angular Frontend*
 *   [MySQL](https://www.mysql.com/)
 *   [Redis](https://redis.io/) (Run via Docker recommended)
 
