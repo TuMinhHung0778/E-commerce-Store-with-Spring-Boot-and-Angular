@@ -122,7 +122,7 @@ npm start
 > Access functionality at `http://localhost:4200`
 
 ## � Screenshots
-*(Add your screenshots here)*
+*(I will update and add the screenshots here as soon as possible.)*
 | Home Page | Product Detail | Admin Dashboard |
 |:---:|:---:|:---:|
 | ![Home](https://via.placeholder.com/300x150?text=Home+Page+Demo) | ![Product](https://via.placeholder.com/300x150?text=Product+Page+Demo) | ![Admin](https://via.placeholder.com/300x150?text=Admin+Panel+Demo) |
