@@ -1,0 +1,45 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 420" role="img" aria-label="NovaMart system architecture">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#020617"/>
+      <stop offset="100%" stop-color="#134e4a"/>
+    </linearGradient>
+    <linearGradient id="accent" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#0d9488"/>
+      <stop offset="100%" stop-color="#14b8a6"/>
+    </linearGradient>
+  </defs>
+  <rect width="960" height="420" rx="18" fill="url(#bg)"/>
+  <text x="40" y="42" fill="#f8fafc" font-family="Segoe UI, sans-serif" font-size="22" font-weight="700">NovaMart Architecture</text>
+  <text x="40" y="68" fill="#94a3b8" font-family="Segoe UI, sans-serif" font-size="14">Layered monolith with optional cache and event streaming</text>
+
+  <rect x="60" y="120" width="150" height="72" rx="12" fill="#1e293b" stroke="#334155"/>
+  <text x="135" y="152" fill="#f8fafc" text-anchor="middle" font-family="Segoe UI, sans-serif" font-size="14" font-weight="600">Angular 17</text>
+  <text x="135" y="174" fill="#94a3b8" text-anchor="middle" font-family="Segoe UI, sans-serif" font-size="12">Storefront UI</text>
+
+  <rect x="280" y="120" width="170" height="72" rx="12" fill="#1e293b" stroke="#334155"/>
+  <text x="365" y="152" fill="#f8fafc" text-anchor="middle" font-family="Segoe UI, sans-serif" font-size="14" font-weight="600">Spring Boot API</text>
+  <text x="365" y="174" fill="#94a3b8" text-anchor="middle" font-family="Segoe UI, sans-serif" font-size="12">/api/v1 REST + JWT</text>
+
+  <rect x="520" y="90" width="150" height="60" rx="12" fill="#1e293b" stroke="#334155"/>
+  <text x="595" y="118" fill="#f8fafc" text-anchor="middle" font-family="Segoe UI, sans-serif" font-size="14" font-weight="600">MySQL 8</text>
+  <text x="595" y="138" fill="#94a3b8" text-anchor="middle" font-family="Segoe UI, sans-serif" font-size="12">Primary datastore</text>
+
+  <rect x="520" y="170" width="150" height="60" rx="12" fill="#1e293b" stroke="#334155"/>
+  <text x="595" y="198" fill="#f8fafc" text-anchor="middle" font-family="Segoe UI, sans-serif" font-size="14" font-weight="600">Redis</text>
+  <text x="595" y="218" fill="#94a3b8" text-anchor="middle" font-family="Segoe UI, sans-serif" font-size="12">Product cache</text>
+
+  <rect x="720" y="130" width="170" height="72" rx="12" fill="#1e293b" stroke="#334155"/>
+  <text x="805" y="162" fill="#f8fafc" text-anchor="middle" font-family="Segoe UI, sans-serif" font-size="14" font-weight="600">Apache Kafka</text>
+  <text x="805" y="184" fill="#94a3b8" text-anchor="middle" font-family="Segoe UI, sans-serif" font-size="12">Async events</text>
+
+  <path d="M210 156 H280" stroke="url(#accent)" stroke-width="3" marker-end="url(#arrow)"/>
+  <path d="M450 156 H520" stroke="url(#accent)" stroke-width="3"/>
+  <path d="M450 176 H520" stroke="#64748b" stroke-width="2" stroke-dasharray="6 4"/>
+  <path d="M670 166 H720" stroke="#64748b" stroke-width="2" stroke-dasharray="6 4"/>
+
+  <rect x="60" y="260" width="830" height="110" rx="14" fill="rgba(15,118,110,0.12)" stroke="rgba(20,184,166,0.35)"/>
+  <text x="80" y="290" fill="#5eead4" font-family="Segoe UI, sans-serif" font-size="13" font-weight="700">BACKEND MODULES</text>
+  <text x="80" y="318" fill="#cbd5e1" font-family="Segoe UI, sans-serif" font-size="13">Users · Roles · Categories · Products · Orders · Coupons · Comments · Health</text>
+  <text x="80" y="346" fill="#94a3b8" font-family="Segoe UI, sans-serif" font-size="12">Cross-cutting: Spring Security, Flyway, OpenAPI, Actuator, i18n, DTO mapping</text>
+</svg>

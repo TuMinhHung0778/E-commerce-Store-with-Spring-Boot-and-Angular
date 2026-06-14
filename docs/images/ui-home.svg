@@ -1,0 +1,52 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 540" role="img" aria-label="NovaMart storefront preview">
+  <defs>
+    <linearGradient id="pageBg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#020617"/>
+      <stop offset="55%" stop-color="#0f172a"/>
+      <stop offset="100%" stop-color="#134e4a"/>
+    </linearGradient>
+    <linearGradient id="card" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#1e293b"/>
+      <stop offset="100%" stop-color="#0f172a"/>
+    </linearGradient>
+  </defs>
+  <rect width="960" height="540" rx="18" fill="url(#pageBg)"/>
+  <rect x="0" y="0" width="960" height="64" fill="rgba(15,23,42,0.92)"/>
+  <rect x="36" y="18" width="32" height="32" rx="8" fill="#0d9488"/>
+  <text x="52" y="40" fill="#fff" text-anchor="middle" font-family="Segoe UI, sans-serif" font-size="16" font-weight="700">N</text>
+  <text x="80" y="40" fill="#f8fafc" font-family="Segoe UI, sans-serif" font-size="18" font-weight="700">NovaMart</text>
+  <text x="760" y="40" fill="#94a3b8" font-family="Segoe UI, sans-serif" font-size="13">Home · Deals · Cart · Sign in</text>
+
+  <text x="480" y="130" fill="#5eead4" text-anchor="middle" font-family="Segoe UI, sans-serif" font-size="12" font-weight="700" letter-spacing="2">CURATED MARKETPLACE</text>
+  <text x="480" y="170" fill="#f8fafc" text-anchor="middle" font-family="Segoe UI, sans-serif" font-size="30" font-weight="700">Discover products built for everyday life</text>
+  <text x="480" y="205" fill="#94a3b8" text-anchor="middle" font-family="Segoe UI, sans-serif" font-size="14">Search, filter by category, and checkout with secure JWT APIs</text>
+
+  <rect x="250" y="240" width="280" height="42" rx="10" fill="#1e293b" stroke="#334155"/>
+  <rect x="540" y="240" width="170" height="42" rx="10" fill="#1e293b" stroke="#334155"/>
+  <rect x="720" y="240" width="110" height="42" rx="10" fill="#0d9488"/>
+  <text x="270" y="266" fill="#64748b" font-family="Segoe UI, sans-serif" font-size="13">Search products...</text>
+  <text x="555" y="266" fill="#64748b" font-family="Segoe UI, sans-serif" font-size="13">All categories</text>
+  <text x="775" y="266" fill="#fff" text-anchor="middle" font-family="Segoe UI, sans-serif" font-size="13" font-weight="600">Search</text>
+
+  <g transform="translate(70 310)">
+    <rect width="250" height="190" rx="16" fill="url(#card)" stroke="rgba(148,163,184,0.15)"/>
+    <rect x="16" y="16" width="218" height="96" rx="10" fill="#334155"/>
+    <text x="24" y="136" fill="#f8fafc" font-family="Segoe UI, sans-serif" font-size="15" font-weight="600">Wireless Headphones</text>
+    <text x="24" y="158" fill="#94a3b8" font-family="Segoe UI, sans-serif" font-size="12">Noise cancelling · 30h battery</text>
+    <text x="24" y="182" fill="#5eead4" font-family="Segoe UI, sans-serif" font-size="16" font-weight="700">$129.00</text>
+  </g>
+  <g transform="translate(355 310)">
+    <rect width="250" height="190" rx="16" fill="url(#card)" stroke="rgba(148,163,184,0.15)"/>
+    <rect x="16" y="16" width="218" height="96" rx="10" fill="#334155"/>
+    <text x="24" y="136" fill="#f8fafc" font-family="Segoe UI, sans-serif" font-size="15" font-weight="600">Smart Watch Pro</text>
+    <text x="24" y="158" fill="#94a3b8" font-family="Segoe UI, sans-serif" font-size="12">Health tracking · GPS enabled</text>
+    <text x="24" y="182" fill="#5eead4" font-family="Segoe UI, sans-serif" font-size="16" font-weight="700">$249.00</text>
+  </g>
+  <g transform="translate(640 310)">
+    <rect width="250" height="190" rx="16" fill="url(#card)" stroke="rgba(148,163,184,0.15)"/>
+    <rect x="16" y="16" width="218" height="96" rx="10" fill="#334155"/>
+    <text x="24" y="136" fill="#f8fafc" font-family="Segoe UI, sans-serif" font-size="15" font-weight="600">Mechanical Keyboard</text>
+    <text x="24" y="158" fill="#94a3b8" font-family="Segoe UI, sans-serif" font-size="12">Hot-swappable switches</text>
+    <text x="24" y="182" fill="#5eead4" font-family="Segoe UI, sans-serif" font-size="16" font-weight="700">$89.00</text>
+  </g>
+</svg>

@@ -1,47 +1,50 @@
 <app-header></app-header>
-<div class="container">
-  <div class="intro-section">
-    <h1>Đây là trang Home</h1>
-    <p>Trang này hiển thị danh sách các sản phẩm, kèm ảnh</p>
-    <p>Các bạn có thể chọn xem sản phẩm và mua hàng tại đây</p>
-  </div>
-  <!--Đoạn này có 1 ô searchbox bên trái, 1 combobox bên phải  -->
+<div class="container page-shell">
+  <section class="hero-section">
+    <p class="hero-eyebrow">Curated marketplace</p>
+    <h1>Discover products built for everyday life</h1>
+    <p class="hero-copy">
+      Browse categories, compare items, and checkout securely with JWT-protected APIs
+      backed by Spring Boot.
+    </p>
+  </section>
+
   <div class="search-box">
     <input
       [(ngModel)]="keyword" class="form-control search-input"
-      placeholder="Tìm sản phẩm"
+      placeholder="Search products..."
       type="text"
     >
     <select
       [(ngModel)]="selectedCategoryId"
       class="form-control product-category"
     >
-      <option [value]="0">Tất cả</option>
+      <option [value]="0">All categories</option>
       @for (category of categories; track category.name) {
         <option [value]="category.id">
           {{ category.name }}
         </option>
       }
-
     </select>
-    <button (click)="searchProducts()" class="btn btn-primary">Tìm kiếm</button>
+    <button (click)="searchProducts()" class="btn btn-primary">Search</button>
   </div>
-  <div class="row">
+
+  <div class="row product-grid">
     @for (product of products; track product.id) {
       <div class="col-lg-4 col-md-6">
-        <div class="product-item" (click)="onProductClick(product.id)">
-          <img [src]="product.url" alt="Product Image" class="product-image">
+        <article class="product-item" (click)="onProductClick(product.id)">
+          <img [src]="product.url" alt="Product image" class="product-image">
           <h3 class="product-name">{{ product.name }}</h3>
           <p class="product-description">{{ product.description }}</p>
-          <p class="product-price">Giá: ${{ product.price }}</p>
-        </div>
+          <p class="product-price">${{ product.price }}</p>
+        </article>
       </div>
     }
   </div>
 </div>
 
-<div class="d-flex justify-content-center">
-  <nav aria-label="Page navigation">
+<div class="d-flex justify-content-center pagination-shell">
+  <nav aria-label="Product pagination">
     <ul class="pagination">
       @if (currentPage > 0) {
         <li class="page-item">

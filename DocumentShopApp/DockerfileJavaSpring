@@ -13,10 +13,7 @@ COPY --from=build /app/shopapp-backend/uploads uploads
 EXPOSE 8088
 CMD ["java","-jar","app.jar"]
 
-#docker build -t shopapp-spring:1.0.4 -f ./DockerfileJavaSpring .
-#docker login
-#create sunlight4d/shopapp-spring:1.0.4 repository on DockerHub
-#docker tag shopapp-spring:1.0.4 sunlight4d/shopapp-spring:1.0.4
-#docker push sunlight4d/shopapp-spring:1.0.4
+# docker build -t novamart-api:latest -f ./DockerfileJavaSpring .
+# docker run -p 8088:8088 novamart-api:latest
 
 

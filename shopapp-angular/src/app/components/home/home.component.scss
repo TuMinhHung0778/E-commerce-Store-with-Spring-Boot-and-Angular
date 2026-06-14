@@ -1,117 +1,135 @@
 @import "../../styles/shared-styles.scss";
 
-.intro-section {
+.page-shell {
+  padding-top: 1.5rem;
+  padding-bottom: 2rem;
+}
+
+.hero-section {
   text-align: center;
-  color: white;
-  padding: 20px;
+  color: #f8fafc;
+  padding: 2.5rem 1rem 2rem;
+  margin-bottom: 1.5rem;
+}
+
+.hero-eyebrow {
+  color: $brand-highlight;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  font-size: 0.75rem;
+  font-weight: 600;
+  margin-bottom: 0.75rem;
+}
+
+.hero-section h1 {
+  font-size: clamp(1.75rem, 4vw, 2.75rem);
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  margin-bottom: 0.75rem;
+}
+
+.hero-copy {
+  max-width: 640px;
+  margin: 0 auto;
+  color: $brand-text-muted;
+  line-height: 1.6;
 }
 
 .search-box {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
   justify-content: center;
-  margin-bottom: 20px;
+  gap: 0.75rem;
+  margin-bottom: 2rem;
 }
 
 .product-category {
-  width: 200px;
+  width: 220px;
 }
 
 .search-input {
-  width: 300px;
-  background-color: $shopapp-background-color;
-  margin-right: 10px;
-  border-color: rgba(255, 255, 255, 0.5);
-  color: white;
+  width: min(360px, 100%);
+  background-color: $brand-surface-elevated;
+  border: 1px solid $brand-border;
+  color: #f8fafc;
 }
 
 .form-control {
   background-color: transparent;
-  color: white;
+  color: #f8fafc;
 }
 
-.form-control::placeholder {
-  /* Chrome, Firefox, Opera, Safari 10.1+ */
-  color: rgba(255, 255, 255, 0.5);
-  opacity: 1;
-  /* Firefox */
-}
-
-.form-control:-ms-input-placeholder {
-  /* Internet Explorer 10-11 */
-  color: rgba(255, 255, 255, 0.5);
-}
-
+.form-control::placeholder,
+.form-control:-ms-input-placeholder,
 .form-control::-ms-input-placeholder {
-  /* Microsoft Edge */
-  color: rgba(255, 255, 255, 0.5);
+  color: rgba(148, 163, 184, 0.9);
+  opacity: 1;
 }
 
 .product-item {
-  background-color: $shopapp-background-color;
-  border: 1px solid rgb(35, 39, 61);
-  border-radius: 20px;
-  padding: 20px;
-  margin-bottom: 20px;
+  background: linear-gradient(180deg, rgba(30, 41, 59, 0.95), rgba(15, 23, 42, 0.95));
+  border: 1px solid rgba(148, 163, 184, 0.12);
+  border-radius: 18px;
+  padding: 1.25rem;
+  margin-bottom: 1.25rem;
+  cursor: pointer;
+  transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.product-item:hover {
+  transform: translateY(-4px);
+  border-color: rgba(20, 184, 166, 0.45);
+  box-shadow: 0 16px 40px rgba(2, 6, 23, 0.35);
 }
 
 .product-image {
   width: 100%;
-  height: auto;
-  margin-bottom: 10px;
+  aspect-ratio: 4 / 3;
+  object-fit: cover;
+  border-radius: 12px;
+  margin-bottom: 0.875rem;
 }
 
 .product-name {
-  color: white;
+  color: #f8fafc;
+  font-size: 1.05rem;
+  margin-bottom: 0.35rem;
 }
 
 .product-description {
-  color: rgb(173, 178, 203);
-}
-
-.product-warranty {
-  color: $shopapp-tint-color;
+  color: $brand-text-muted;
+  font-size: 0.92rem;
+  min-height: 2.75rem;
 }
 
 .product-price {
-  color: white;
+  color: $brand-highlight;
+  font-weight: 700;
+  margin-top: 0.75rem;
 }
 
-.product-rating {
-  color: #FFD700;
-  margin-top: 10px;
+.pagination-shell {
+  margin-bottom: 2rem;
 }
 
-.product-actions {
-  display: flex;
-  justify-content: center;
-  margin-top: 20px;
-}
-
-.space-x {
-  margin: 0 5px;
-  /*margin-top, margin-right, margin-bottom, margin-left*/
-}
-
-.page-number {
-  cursor: pointer;
-  padding: 5px 10px;
-  border: 1px solid #ccc;
-  margin: 0 2px;
-  border-radius: 3px;
-}
-
-.page-number.active {
-  background-color: $shopapp-color !important;
-  color: #fff;
-  border-color: $shopapp-color !important;
-}
-
+.page-number.active,
 .btn-primary {
-  background-color: $shopapp-color;
-  border-color: $shopapp-color;
+  background-color: $brand-primary !important;
+  border-color: $brand-primary !important;
 }
 
 .btn.btn-primary {
-  margin-left: 10px;
+  font-weight: 600;
+}
+
+.page-link {
+  background-color: $brand-surface-elevated;
+  border-color: $brand-border;
+  color: #e2e8f0;
+}
+
+.page-item.active .page-link {
+  background-color: $brand-primary;
+  border-color: $brand-primary;
 }

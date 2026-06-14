@@ -1,213 +1,307 @@
-# ShopApp — E-Commerce Platform (Spring Boot + Angular)
+# NovaMart — E-Commerce Platform (Spring Boot + Angular)
 
 [![Java](https://img.shields.io/badge/Java-17-orange)](https://openjdk.org/)
 [![Spring Boot](https://img.shields.io/badge/Spring_Boot-3.1.2-brightgreen)](https://spring.io/projects/spring-boot)
 [![Angular](https://img.shields.io/badge/Angular-17-red)](https://angular.dev/)
 [![MySQL](https://img.shields.io/badge/MySQL-8.0-blue)](https://www.mysql.com/)
-[![Redis](https://img.shields.io/badge/Redis-Caching-red)](https://redis.io/)
-[![Kafka](https://img.shields.io/badge/Kafka-Event_Streaming-black)](https://kafka.apache.org/)
-[![License](https://img.shields.io/badge/License-MIT-lightgrey)](#)
+[![Redis](https://img.shields.io/badge/Redis-Cache-red)](https://redis.io/)
+[![Kafka](https://img.shields.io/badge/Kafka-Events-black)](https://kafka.apache.org/)
 
-> Full-stack e-commerce application with a **production-oriented Spring Boot backend** and an **Angular 17** client.  
-> Built to demonstrate secure REST API design, relational data modeling, and enterprise backend practices.
+> **NovaMart** is a full-stack e-commerce platform I designed and implemented to practice production-style backend engineering: secure REST APIs, relational modeling, schema migrations, API documentation, and optional cache/event integrations.
 
-**Repository:** [github.com/TuMinhHung0778/E-commerce-Store-with-Spring-Boot-and-Angular](https://github.com/TuMinhHung0778/E-commerce-Store-with-Spring-Boot-and-Angular)
+**Live repo:** [github.com/TuMinhHung0778/E-commerce-Store-with-Spring-Boot-and-Angular](https://github.com/TuMinhHung0778/E-commerce-Store-with-Spring-Boot-and-Angular)
 
 ---
 
 ## Table of Contents
 
-- [Overview](#overview)
-- [Business Domain](#business-domain)
-- [Architecture](#architecture)
-- [Backend Highlights](#backend-highlights)
-- [API Modules](#api-modules)
-- [Tech Stack](#tech-stack)
-- [Project Structure](#project-structure)
-- [Getting Started](#getting-started)
-- [Configuration](#configuration)
-- [API Documentation](#api-documentation)
-- [Docker & Deployment](#docker--deployment)
-- [Testing](#testing)
-- [Author](#author)
+1. [Project Snapshot](#project-snapshot)
+2. [System Architecture](#system-architecture)
+3. [UI Preview](#ui-preview)
+4. [Core API Flows](#core-api-flows)
+5. [Backend Design](#backend-design)
+6. [API Reference](#api-reference)
+7. [Tech Stack](#tech-stack)
+8. [Repository Layout](#repository-layout)
+9. [Getting Started](#getting-started)
+10. [Configuration](#configuration)
+11. [Docker Deployment](#docker-deployment)
+12. [Testing & Quality](#testing--quality)
+13. [Author](#author)
 
 ---
 
-## Overview
+## Project Snapshot
 
-ShopApp is a modular e-commerce platform that covers the core flows of an online store: user authentication, product catalog, shopping cart / order placement, coupons, and community features (comments & ratings).
+| Item | Detail |
+|------|--------|
+| **Product name** | NovaMart |
+| **Domain** | B2C e-commerce |
+| **My role** | Backend developer (full-stack integration) |
+| **Backend** | Java 17, Spring Boot 3.1.2, Spring Security, JPA/Hibernate |
+| **Frontend** | Angular 17, Bootstrap 5, JWT interceptor |
+| **Database** | MySQL 8 + Flyway migrations |
+| **Docs** | OpenAPI 3 / Swagger UI, Postman collection |
+| **Extras** | Redis cache toggle, Kafka producer, Docker/K8s samples |
 
-The backend is the primary focus of this repository. It follows a **layered architecture** (Controller → Service → Repository) with clear separation between persistence models, DTOs, and API response objects.
+**Business capabilities**
 
-| Layer | Responsibility |
-|-------|----------------|
-| **Controllers** | HTTP routing, input validation, authorization |
-| **Services** | Business logic, transactions, caching |
-| **Repositories** | Data access via Spring Data JPA |
-| **DTOs / Responses** | Stable API contracts decoupled from entities |
-
----
-
-## Business Domain
-
-This project models a real e-commerce domain with enough complexity to discuss both **business context** and **technical implementation**:
-
-- **Catalog management** — categories, products, multi-image uploads, keyword & category filtering with pagination
-- **Order lifecycle** — order creation, status tracking (`PENDING`, `PROCESSING`, `SHIPPED`, `DELIVERED`), order details
-- **Customer accounts** — registration, login, profile updates, account blocking (admin)
-- **Promotions** — coupon validation and discount calculation
-- **Engagement** — product comments and ratings with user verification
-- **Administration** — role-based access for catalog and user management
+- Product catalog with search, category filter, pagination, and image upload
+- User registration/login with JWT + refresh tokens and RBAC
+- Order creation with shipping details, coupon calculation, and status tracking
+- Product comments/ratings and admin management endpoints
+- Health checks via Spring Actuator
 
 ---
 
-## Architecture
+## System Architecture
+
+![NovaMart architecture diagram](docs/images/architecture.svg)
 
 ```mermaid
-flowchart LR
-    Client["Angular Client<br/>(port 4200)"]
-    API["Spring Boot REST API<br/>(port 8088)"]
-    MySQL[("MySQL 8")]
-    Redis[("Redis")]
-    Kafka["Apache Kafka"]
+flowchart TB
+    subgraph Client
+        A[Angular 17 SPA]
+    end
 
-    Client -->|"HTTPS / REST<br/>/api/v1/*"| API
-    API --> MySQL
-    API -.->|"optional cache"| Redis
-    API -.->|"async events"| Kafka
+    subgraph API["Spring Boot Application :8088"]
+        C[Controllers]
+        S[Services]
+        R[Repositories]
+        C --> S --> R
+    end
+
+    subgraph Data
+        DB[(MySQL)]
+        RD[(Redis)]
+        KF[Kafka Broker]
+    end
+
+    A -->|REST /api/v1| C
+    R --> DB
+    S -. optional .-> RD
+    S -. async .-> KF
 ```
 
-**Design decisions:**
+**Architectural principles I applied**
 
-- **Stateless security** — JWT access tokens with refresh-token rotation stored in MySQL
-- **Schema versioning** — Flyway migrations instead of `ddl-auto: create-drop` in production-like setups
-- **API-first** — OpenAPI/Swagger for discoverable, documented endpoints
-- **Observability** — Spring Actuator health endpoints for runtime checks
-- **Internationalization** — localized error messages (`en` / `vi`) via Spring MessageSource
-
----
-
-## Backend Highlights
-
-### Security & Authentication
-- JWT-based authentication with custom `JwtTokenFilter`
-- Refresh token flow (`/api/v1/users/refreshToken`)
-- BCrypt password hashing
-- Role-based access control (`ROLE_USER`, `ROLE_ADMIN`) via `@PreAuthorize`
-- OAuth2 client integration (Facebook) with `CustomOAuth2UserService`
-- CORS configuration for frontend integration
-
-### Data & Persistence
-- Spring Data JPA / Hibernate ORM with MySQL 8
-- Flyway migrations (`V1`–`V5`) for tokens, comments, and coupons
-- JPA Specifications for dynamic product search (keyword, category, price range)
-- DTO + ModelMapper pattern to keep entities internal
-
-### Performance & Scalability Concepts
-- Redis-backed product listing cache (toggle via `spring.data.redis.use-redis-cache`)
-- Kafka producer configuration for asynchronous order/notification workflows
-- Paginated list endpoints across users, products, and orders
-
-### API Quality
-- Jakarta Bean Validation on request DTOs
-- Structured custom exceptions (`DataNotFoundException`, `PermissionDenyException`, etc.)
-- Swagger UI + OpenAPI 3 spec generation
-- Postman collection available under `DocumentShopApp/postman/`
+- **Layered monolith** — clear boundaries without premature microservice complexity
+- **DTO boundary** — entities never leak directly to API consumers
+- **Security by default** — authenticated routes enforced through Spring Security + `@PreAuthorize`
+- **Versioned schema** — Flyway instead of destructive `ddl-auto` in shared environments
+- **Observable API** — Swagger for contract discovery and Actuator for health probes
 
 ---
 
-## API Modules
+## UI Preview
 
-All endpoints are prefixed with **`/api/v1`**.
+The storefront uses a custom teal/slate design system (not a default template skin).
 
-| Module | Base Path | Key Operations |
-|--------|-----------|----------------|
-| Users | `/users` | Register, login, refresh token, profile CRUD, block user |
-| Roles | `/roles` | List roles |
-| Categories | `/categories` | CRUD |
-| Products | `/products` | CRUD, search/filter, image upload & serving |
-| Orders | `/orders` | Create, list by user, update status, keyword search |
-| Order Details | `/order_details` | CRUD per line item |
-| Coupons | `/coupons` | Discount calculation |
-| Comments | `/comments` | List, create, update ratings |
-| Health | `/healthcheck` | Application health probe |
+![NovaMart home page preview](docs/images/ui-home.svg)
 
-**Default ports:**
-- Backend API: `http://localhost:8088`
-- Swagger UI: `http://localhost:8088/swagger-ui/index.html`
-- Actuator: `http://localhost:8088/api/v1/actuator/health`
+| Screen | Route | Purpose |
+|--------|-------|---------|
+| Home / catalog | `/` | Search, filter, paginate products |
+| Product detail | `/products/:id` | Gallery, price, add to cart |
+| Checkout | `/orders` | Shipping form, coupon, place order |
+| Auth | `/login`, `/register` | JWT login with role selection |
+| Admin | `/admin/*` | Product & order management |
+
+---
+
+## Core API Flows
+
+### 1) Authentication & token refresh
+
+```mermaid
+sequenceDiagram
+    autonumber
+    participant UI as Angular Client
+    participant API as UserController
+    participant SVC as UserService
+    participant DB as MySQL
+    participant JWT as JwtTokenFilter
+
+    UI->>API: POST /api/v1/users/login {phone, password, role}
+    API->>SVC: authenticate()
+    SVC->>DB: find user + validate BCrypt hash
+    SVC->>DB: persist access + refresh tokens
+    SVC-->>API: LoginResponse(token, refreshToken)
+    API-->>UI: 200 OK
+
+    UI->>API: GET /api/v1/products (Authorization: Bearer ...)
+    API->>JWT: validate JWT signature + expiry
+    JWT-->>API: SecurityContext populated
+    API-->>UI: 200 OK
+
+    UI->>API: POST /api/v1/users/refreshToken
+    API->>SVC: rotate refresh token
+    SVC-->>UI: new access token
+```
+
+**Endpoints involved**
+
+| Step | Method | Path |
+|------|--------|------|
+| Register | `POST` | `/api/v1/users/register` |
+| Login | `POST` | `/api/v1/users/login` |
+| Refresh | `POST` | `/api/v1/users/refreshToken` |
+| Profile | `POST` | `/api/v1/users/details` |
+
+---
+
+### 2) Product discovery & caching
+
+```mermaid
+sequenceDiagram
+    autonumber
+    participant UI as Angular Client
+    participant API as ProductController
+    participant SVC as ProductService
+    participant REDIS as Redis (optional)
+    participant DB as MySQL
+
+    UI->>API: GET /api/v1/products?keyword=&category_id=&page=&limit=
+    API->>SVC: getAllProducts(...)
+    alt Redis cache enabled
+        SVC->>REDIS: lookup cache key
+        REDIS-->>SVC: cached page hit
+    else cache miss
+        SVC->>DB: JPA query + Specification filters
+        DB-->>SVC: Page<Product>
+        SVC->>REDIS: store serialized response
+    end
+    SVC-->>API: ProductListResponse
+    API-->>UI: 200 OK
+```
+
+**Query parameters**
+
+| Param | Type | Description |
+|-------|------|-------------|
+| `keyword` | string | Name/description search |
+| `category_id` | long | Filter by category (`0` = all) |
+| `page` | int | Zero-based page index |
+| `limit` | int | Page size |
+
+---
+
+### 3) Order placement
+
+```mermaid
+sequenceDiagram
+    autonumber
+    participant UI as Angular Client
+    participant OC as OrderController
+    participant OS as OrderService
+    participant CS as CouponService
+    participant DB as MySQL
+    participant KF as Kafka
+
+    UI->>OC: POST /api/v1/orders (Bearer token)
+    OC->>OS: createOrder(orderDTO, userId)
+    OS->>CS: validate coupon (optional)
+    OS->>DB: save Order + OrderDetails (transaction)
+    OS->>KF: publish order event (optional)
+    OS-->>OC: OrderResponse
+    OC-->>UI: 201 Created
+```
+
+**Order statuses:** `PENDING` → `PROCESSING` → `SHIPPED` → `DELIVERED`
+
+---
+
+## Backend Design
+
+### Package structure
+
+```
+com.project.shopapp
+├── configurations/     # Security, Redis, Kafka, WebMvc, ModelMapper
+├── controllers/        # REST adapters
+├── services/           # Business logic (+ interfaces)
+├── repositories/       # Spring Data JPA
+├── models/             # JPA entities
+├── dtos/               # Request payloads
+├── responses/          # Response payloads
+├── filters/            # JwtTokenFilter
+├── exceptions/         # Domain-specific errors
+└── components/         # LocalizationUtils, etc.
+```
+
+### Security model
+
+| Route pattern | Access |
+|---------------|--------|
+| `/users/register`, `/users/login`, `/users/refreshToken` | Public |
+| `GET /categories/**`, `GET /products/**` | Public |
+| `POST /products`, `PUT /products/**`, `DELETE /**` | `ROLE_ADMIN` |
+| `/orders/**`, `/users/details/**` | Authenticated user |
+
+### Database migrations (Flyway)
+
+| Version | Script | Purpose |
+|---------|--------|---------|
+| V1 | `V1__alter_some_tables.sql` | Baseline schema adjustments |
+| V2 | `V2__change_tokens.sql` | Token table updates |
+| V3 | `V3__refresh_tokens.sql` | Refresh token support |
+| V4 | `V4__create_comments_table.sql` | Product comments |
+| V5 | `V5__create_coupon_table.sql` | Coupon engine |
+
+---
+
+## API Reference
+
+Base URL: `http://localhost:8088/api/v1`
+
+| Module | Endpoint | Methods | Notes |
+|--------|----------|---------|-------|
+| Health | `/healthcheck/health` | GET | Public probe |
+| Users | `/users` | GET | Admin list |
+| Users | `/users/register` | POST | Public |
+| Users | `/users/login` | POST | Returns JWT |
+| Users | `/users/refreshToken` | POST | Token rotation |
+| Categories | `/categories` | GET, POST, PUT, DELETE | GET public |
+| Products | `/products` | GET, POST, PUT, DELETE | Search + CRUD |
+| Products | `/products/uploads/{id}` | POST | Multipart images |
+| Orders | `/orders` | GET, POST, PUT, DELETE | User-scoped |
+| Order details | `/order_details` | CRUD | Line items |
+| Coupons | `/coupons/calculate` | GET | Discount preview |
+| Comments | `/comments` | GET, POST, PUT | Ratings |
+
+**Interactive docs**
+
+| Resource | URL |
+|----------|-----|
+| Swagger UI | http://localhost:8088/swagger-ui/index.html |
+| OpenAPI JSON | http://localhost:8088/api-docs |
+| Postman | `DocumentShopApp/postman/NovaMart-API.postman_collection.json` |
 
 ---
 
 ## Tech Stack
 
 ### Backend
-| Category | Technology |
-|----------|------------|
-| Language | Java 17 (LTS) |
-| Framework | Spring Boot 3.1.2 |
-| Security | Spring Security, JWT (jjwt 0.11.5), OAuth2 Client |
-| Persistence | Spring Data JPA, Hibernate, MySQL Connector/J |
-| Migration | Flyway 10.x |
-| Cache | Spring Data Redis, Lettuce |
-| Messaging | Spring Kafka |
-| Mapping | ModelMapper |
-| Documentation | SpringDoc OpenAPI 3 |
-| Build | Maven (wrapper included) |
-| Utilities | Lombok, JavaFaker (seed data) |
+Java 17 · Spring Boot 3.1.2 · Spring Security · Spring Data JPA · Hibernate · MySQL · Flyway · Redis · Kafka · ModelMapper · Lombok · SpringDoc OpenAPI · Actuator · Maven
 
 ### Frontend
-| Category | Technology |
-|----------|------------|
-| Framework | Angular 17 |
-| Language | TypeScript 5.2 |
-| UI | Bootstrap 5, ng-bootstrap |
-| Auth | @auth0/angular-jwt |
-| SSR | Angular Universal (@angular/ssr) |
+Angular 17 · TypeScript · RxJS · Bootstrap 5 · ng-bootstrap · Angular JWT · SSR ready
 
-### DevOps & Tooling
-| Category | Technology |
-|----------|------------|
-| Containerization | Docker (multi-stage builds) |
-| Orchestration samples | Kubernetes manifests in `DocumentShopApp/` |
-| API Testing | Postman collection |
-| Logging | SLF4J + Logback |
+### DevOps
+Docker multi-stage builds · Kubernetes sample manifests · Postman · Logback
 
 ---
 
-## Project Structure
+## Repository Layout
 
 ```
-Java-Springboot-And-Angular/
-├── shopapp-backend/          # Main Spring Boot application (run this)
-│   ├── src/main/java/com/project/shopapp/
-│   │   ├── configurations/   # Security, Redis, Kafka, WebMvc
-│   │   ├── controllers/      # REST endpoints
-│   │   ├── services/         # Business logic
-│   │   ├── repositories/     # JPA repositories
-│   │   ├── models/           # JPA entities
-│   │   ├── dtos/             # Request payloads
-│   │   ├── responses/        # API response objects
-│   │   ├── filters/          # JWT filter
-│   │   └── exceptions/       # Domain exceptions
-│   └── src/main/resources/
-│       ├── application.yml
-│       └── dev/db/migration/ # Flyway SQL scripts
-│
-├── shopapp-angular/          # Angular 17 SPA + SSR
-│
-├── DocumentShopApp/          # Course materials & DevOps artifacts
-│   ├── sql/                  # Database seed scripts
-│   ├── postman/              # API collection
-│   ├── DockerfileJavaSpring
-│   ├── DockerfileAngular
-│   ├── deployment.yaml
-│   └── kafka-deployment.yaml
-│
+.
+├── shopapp-backend/       # Runnable Spring Boot API
+├── shopapp-angular/       # Runnable Angular storefront
+├── DocumentShopApp/       # SQL seeds, Postman, Docker/K8s, learning snapshots
+├── docs/images/           # Architecture & UI diagrams for README
 └── README.md
 ```
-
-> **Note:** `DocumentShopApp/` contains incremental learning snapshots, SQL scripts, Docker/Kubernetes configs, and Postman collections. The runnable application lives in `shopapp-backend/` and `shopapp-angular/` at the repository root.
 
 ---
 
@@ -215,142 +309,104 @@ Java-Springboot-And-Angular/
 
 ### Prerequisites
 
-| Tool | Version |
-|------|---------|
-| JDK | 17+ |
-| Maven | 3.8+ (or use `./mvnw`) |
-| MySQL | 8.0+ |
-| Node.js | 18 LTS+ (frontend only) |
-| Redis | 6+ (optional, for caching) |
-| Kafka | 3.x (optional, for event publishing) |
+JDK 17+, Maven 3.8+, MySQL 8+, Node.js 18+ (frontend), Redis/Kafka optional
 
-### 1. Clone the repository
+### Backend
 
 ```bash
 git clone https://github.com/TuMinhHung0778/E-commerce-Store-with-Spring-Boot-and-Angular.git
-cd E-commerce-Store-with-Spring-Boot-and-Angular
+cd E-commerce-Store-with-Spring-Boot-and-Angular/shopapp-backend
+
+# Create database
+mysql -u root -p -e "CREATE DATABASE IF NOT EXISTS ShopApp;"
+
+# Optional seed data
+mysql -u root -p ShopApp < ../DocumentShopApp/sql/database.sql
+
+./mvnw spring-boot:run
 ```
 
-### 2. Prepare the database
-
-Create a MySQL database named `ShopApp`, then optionally import the seed script:
+Verify:
 
 ```bash
-mysql -u root -p < DocumentShopApp/sql/database.sql
+curl http://localhost:8088/api/v1/healthcheck/health
 ```
 
-Flyway will apply incremental migrations on startup.
-
-### 3. Configure environment
-
-Update `shopapp-backend/src/main/resources/application.yml` or set environment variables:
+### Frontend
 
 ```bash
-export SPRING_DATASOURCE_URL="jdbc:mysql://localhost:3306/ShopApp?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true"
-export MYSQL_ROOT_PASSWORD="your_password"
-export REDIS_HOST="localhost"
-export REDIS_PORT="6379"
-```
-
-### 4. Run the backend
-
-```bash
-cd shopapp-backend
-./mvnw spring-boot:run        # Linux / macOS
-# mvnw.cmd spring-boot:run    # Windows
-```
-
-Verify: open `http://localhost:8088/api/v1/healthcheck/health`
-
-### 5. Run the frontend (optional)
-
-```bash
-cd shopapp-angular
+cd ../shopapp-angular
 npm install
 npm start
 ```
 
-Frontend: `http://localhost:4200`
+Open http://localhost:4200
 
 ---
 
 ## Configuration
 
-Key settings in `application.yml`:
+`shopapp-backend/src/main/resources/application.yml`
 
-| Property | Default | Description |
-|----------|---------|-------------|
-| `server.port` | `8088` | API server port |
-| `api.prefix` | `/api/v1` | Global API prefix |
-| `spring.jpa.hibernate.ddl-auto` | `none` | Schema managed by Flyway |
-| `spring.data.redis.use-redis-cache` | `false` | Enable Redis product cache |
-| `jwt.expiration` | `2592000` | Access token TTL (30 days) |
-| `jwt.expiration-refresh-token` | `5184000` | Refresh token TTL (60 days) |
+| Key | Default | Description |
+|-----|---------|-------------|
+| `server.port` | `8088` | API port |
+| `api.prefix` | `/api/v1` | Route prefix |
+| `spring.jpa.hibernate.ddl-auto` | `none` | Flyway owns schema |
+| `spring.data.redis.use-redis-cache` | `false` | Toggle Redis cache |
+| `jwt.expiration` | 30 days | Access token TTL |
+| `jwt.expiration-refresh-token` | 60 days | Refresh token TTL |
 
-> **Security note:** Replace the default `jwt.secretKey` and database credentials before deploying to any shared environment.
-
----
-
-## API Documentation
-
-| Resource | URL |
-|----------|-----|
-| Swagger UI | `http://localhost:8088/swagger-ui/index.html` |
-| OpenAPI JSON | `http://localhost:8088/api-docs` |
-| Postman Collection | `DocumentShopApp/postman/ShopAppJavaSpringUdemy2023.postman_collection.json` |
-
-Protected endpoints require a Bearer token:
-
-```http
-Authorization: Bearer <access_token>
-```
-
-Obtain a token via `POST /api/v1/users/login`.
-
----
-
-## Docker & Deployment
-
-Multi-stage Dockerfiles are provided in `DocumentShopApp/`:
+Environment overrides:
 
 ```bash
-# Build backend image
-cd DocumentShopApp
-docker build -t shopapp-backend:latest -f DockerfileJavaSpring .
+export SPRING_DATASOURCE_URL="jdbc:mysql://localhost:3306/ShopApp?useSSL=false&serverTimezone=UTC"
+export MYSQL_ROOT_PASSWORD="your_password"
+export REDIS_HOST="localhost"
+```
 
-# Run container
+> Replace default JWT secret before any shared deployment.
+
+---
+
+## Docker Deployment
+
+```bash
+cd DocumentShopApp
+docker build -t novamart-api:latest -f DockerfileJavaSpring .
 docker run -p 8088:8088 \
   -e SPRING_DATASOURCE_URL="jdbc:mysql://host.docker.internal:3306/ShopApp" \
   -e MYSQL_ROOT_PASSWORD="your_password" \
-  shopapp-backend:latest
+  novamart-api:latest
 ```
 
-Additional Kubernetes manifests (`deployment.yaml`, `kafka-deployment.yaml`) are available for container orchestration experiments.
+See also `deployment.yaml` and `kafka-deployment.yaml` for Kubernetes experiments.
 
 ---
 
-## Testing
+## Testing & Quality
 
 ```bash
 cd shopapp-backend
 ./mvnw test
 ```
 
-The project includes Spring Boot test scaffolding. Integration and unit test coverage is an active area for improvement — contributions welcome.
+Current coverage includes Spring Boot context tests. Planned improvements: service-layer unit tests and `@WebMvcTest` controller tests for auth and order flows.
 
 ---
 
 ## Author
 
-**Tu Minh Hung** — Backend-focused Software Engineer
+**Tu Minh Hung** — Software Engineer (Java / JavaScript)
 
 | | |
 |---|---|
 | Email | [tuminhhung0901@gmail.com](mailto:tuminhhung0901@gmail.com) |
 | GitHub | [github.com/TuMinhHung0778](https://github.com/TuMinhHung0778) |
 | LinkedIn | [linkedin.com/in/tu-minh-hung](https://www.linkedin.com/in/t%E1%BB%AB-minh-h%C6%B0ng-85a865260/) |
+| Portfolio | See `/portfolio` in workspace |
 | Location | Da Nang, Vietnam |
 
 ---
 
-If this project is useful to you, consider giving it a star on GitHub.
+Built with Spring Boot and Angular. Contributions and feedback welcome.

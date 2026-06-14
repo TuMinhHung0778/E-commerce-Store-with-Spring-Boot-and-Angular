@@ -1,4 +1,13 @@
-$shopapp-color: rgb(127, 68, 255);    
-$shopapp-tint-color: rgb(233, 66, 178);
-$shopapp-title-color: rgb(105, 244, 181);
-$shopapp-background-color: rgb(19, 23, 42);
+$brand-primary: #0d9488;
+$brand-accent: #14b8a6;
+$brand-highlight: #5eead4;
+$brand-surface: #0f172a;
+$brand-surface-elevated: #1e293b;
+$brand-border: #334155;
+$brand-text-muted: #94a3b8;
+
+// Legacy aliases used across component stylesheets
+$shopapp-color: $brand-primary;
+$shopapp-tint-color: $brand-accent;
+$shopapp-title-color: $brand-highlight;
+$shopapp-background-color: $brand-surface;
